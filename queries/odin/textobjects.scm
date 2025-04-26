@@ -98,10 +98,11 @@
 ; works also for multiple targets in lhs. ex. 'res, ok := get_res()'
 ((assignment_statement
   .
-  (_) @_first
-  (_) @_prelast
+  (_) @_first @assignment.lhs
+  (_)? @_prelast
   .
-  (_) @assignment.rhs @assignment.inner .)
+  (expression (_)) @assignment.rhs @assignment.inner )
+
   (#make-range! "assignment.lhs" @_first @_prelast)) @assignment.outer
 
 ; attribute
