@@ -108,6 +108,51 @@
 (attribute
   (_) @attribute.inner) @attribute.outer
 
+
+
+((enum_declaration 
+   . 
+   (identifier) ;@name
+   .
+   (identifier) @assignment.lhs
+   [(number) (float) (string) (character) (boolean)( escape_sequence)] @val @assignment.rhs @assignment.inner
+   )
+ )
+
+
+((variable_declaration 
+   .
+   (identifier) @_first
+   (identifier)? @_last
+   .
+   [(number) (float) (string) (character) (boolean)( escape_sequence)] @first @assignment.rhs  @assignment.inner
+   [(number) (float) (string) (character) (boolean)( escape_sequence)]? @last
+   .
+   ) 
+ (#make-range! "assignment.lhs" @_first @_last)
+ (#make-range! "assignment.rhs" @first @last)
+ (#make-range! "assignment.inner" @first @last)
+ ) @assignment.outer
+
+
+
+
+((var_declaration 
+   . 
+   (_) @_first
+   (_)? @_last
+   .
+   (type) @type
+   .
+   (_) @first  @assignment.rhs  @assignment.inner
+   (_)? @last
+   .
+   ) 
+ (#make-range! "assignment.lhs" @_first @type)
+ (#make-range! "assignment.rhs" @first @last)
+ (#make-range! "assignment.inner" @first @last)
+ ) @assignment.outer
+
 ; number
 (number) @number.inner
 
