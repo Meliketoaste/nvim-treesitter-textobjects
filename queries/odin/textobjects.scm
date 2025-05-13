@@ -193,3 +193,13 @@
   .
   ","? @_end)
   (#make-range! "parameter.outer" @parameter.inner @_end))
+
+
+(for_statement 
+  consequence: 
+  (block 
+	. (_)? @_start
+	(_)? @_end	. 
+	)
+  (#make-range! "loop.inner" @_start @_end)) @loop.outer
+
