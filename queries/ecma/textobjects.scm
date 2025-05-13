@@ -72,7 +72,18 @@
     (#make-range! "function.inner" @_start @_end)))
 
 (class_declaration
-  body: (class_body) @class.inner) @class.outer
+  body: (class_body)) @class.outer
+
+(class_declaration
+  body: (class_body
+    .
+    "{"
+    .
+    (_) @_start @_end
+    (_)? @_end
+    .
+    "}"
+    (#make-range! "class.inner" @_start @_end)))
 
 (export_statement
   (class_declaration)) @class.outer
@@ -281,3 +292,48 @@
   (export_statement)
   (lexical_declaration)
 ] @statement.outer
+
+; 1.  default import
+(import_statement
+  (import_clause
+    (identifier) @parameter.inner @parameter.outer))
+
+; 2.  namespace import  e.g. `* as React`
+(import_statement
+  (import_clause
+    (namespace_import
+      (identifier) @parameter.inner) @parameter.outer))
+
+; 3.  named import  e.g. `import { Bar, Baz } from ...`
+(import_statement
+  (import_clause
+    (named_imports
+      (import_specifier) @parameter.inner)))
+
+; 3‑A.  named import followed by a comma
+((import_statement
+  (import_clause
+    (named_imports
+      (import_specifier) @_start
+      .
+      "," @_end)))
+  (#make-range! "parameter.outer" @_start @_end))
+
+; 3‑B.  comma followed by named import
+((import_statement
+  (import_clause
+    (named_imports
+      "," @_start
+      .
+      (import_specifier) @_end)))
+  (#make-range! "parameter.outer" @_start @_end))
+
+; 3-C.  only one named import without a comma
+(import_statement
+  (import_clause
+    (named_imports
+      "{"
+      .
+      (import_specifier) @parameter.outer
+      .
+      "}")))
